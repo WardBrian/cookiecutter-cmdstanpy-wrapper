@@ -1,4 +1,4 @@
-# cookiecutter-cmdstan-wrapper
+# cookiecutter-cmdstanpy-wrapper
 
 This project a [cookiecutter](https://cookiecutter.readthedocs.io/en/stable/index.html)
 template  designed for package developers who wish to wrap a [Stan](mc-stan.org)
@@ -18,7 +18,7 @@ See an example based on the output of the template [here](https://github.com/War
 ## Usage
 
 ```
-cookiecutter gh:WardBrian/cookiecutter-cmdstan-wrapper
+cookiecutter gh:WardBrian/cookiecutter-cmdstanpy-wrapper
 ```
 
 This will ask you some basic prompts and then generate a folder with skeleton of a Python package.
