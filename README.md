@@ -12,6 +12,9 @@ This uses [cmdstanpy](https://github.com/stan-dev/cmdstanpy) as the underlying i
 If you're looking instead for a template for doing applied modeling work in CmdStanPy,
 check out [cookiecutter-cmdstanpy-analysis](https://github.com/teddygroves/cookiecutter-cmdstanpy-analysis).
 
+
+See an example based on the output of the template [here](https://github.com/WardBrian/stan_py_example)
+
 ## Usage
 
 ```
