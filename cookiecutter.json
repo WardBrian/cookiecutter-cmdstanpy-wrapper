@@ -1,0 +1,20 @@
+{
+    "full_name": "Brian Ward",
+    "email": "bward@flatironinstitute.org",
+    "github_username": "WardBrian",
+    "project_name": "CmdStanPy Model Wrapper",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+    "project_short_description": "Easy wrapping of a Stan model with pre-compilation",
+    "pypi_username": "{{ cookiecutter.github_username }}",
+    "version": "0.1.0",
+    "open_source_license": [
+        "MIT license",
+        "BSD 3 Clause license",
+        "ISC license",
+        "Apache Software License 2.0",
+        "GNU General Public License v3",
+        "Not open source"
+    ],
+    "stan_files": "mymodel, mymodel_alt",
+    "cmdstan_version": "2.30.1"
+}
