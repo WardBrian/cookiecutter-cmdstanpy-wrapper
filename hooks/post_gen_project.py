@@ -7,6 +7,7 @@ PROJECT_DIRECTORY = pathlib.Path(".")
 
 
 if __name__ == '__main__':
+    # create a stan file for each model desired
     for model in [{% for item in models %} "{{ item|trim }}", {% endfor %}]:
         (PROJECT_DIRECTORY /"{{ cookiecutter.project_slug }}"/ "stan" / (model + ".stan")).touch()
 

@@ -123,6 +123,10 @@ class BuildModels(build_ext):
         # don't call build_ext.run, since we're not really building c files
 
 
+# this is taken from the cibuildwheel example https://github.com/joerick/python-ctypes-package-sample
+# it marks the wheel as not specific to the Python API version.
+# This means the wheel will only be built once per platform, rather than per-Python-per-platform.
+# If you are combining with any actual C extensions, you will most likely want to remove this.
 class WheelABINone(bdist_wheel):
     def finalize_options(self) -> None:
         bdist_wheel.finalize_options(self)
@@ -134,6 +138,8 @@ class WheelABINone(bdist_wheel):
 
 
 setup(
+    # Extension marks this as platform-specific
     ext_modules=[Extension("{{ cookiecutter.project_slug }}.stan", [])],
+    # override the build and bdist commands
     cmdclass={"build_ext": BuildModels, "bdist_wheel": WheelABINone},
 )
