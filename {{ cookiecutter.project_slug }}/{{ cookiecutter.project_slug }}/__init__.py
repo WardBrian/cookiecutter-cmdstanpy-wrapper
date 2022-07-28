@@ -17,7 +17,7 @@ if local_cmdstan.exists():
 # Try to load the pre-compiled models. If that fails, compile them
 try:
 {% for item in models %}
-    {{ item|trim|upper }} = CmdStanModel(
+    {{ item|trim|upper }} = cmdstanpy.CmdStanModel(
         exe_file=STAN_FILES_FOLDER / "{{ item|trim }}.exe",
         stan_file=STAN_FILES_FOLDER / "{{ item|trim }}.stan",
         compile=False,
@@ -26,7 +26,7 @@ try:
 except ValueError:
     warnings.warn("Failed to load pre-built models, compiling")
 {% for item in models %}
-    {{ item|trim|upper }} = CmdStanModel(
+    {{ item|trim|upper }} = cmdstanpy.CmdStanModel(
         stan_file=STAN_FILES_FOLDER / "{{ item|trim }}.stan",
         stanc_options={"O1": True},
     )

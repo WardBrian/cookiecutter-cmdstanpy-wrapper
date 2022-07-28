@@ -14,7 +14,7 @@ on:
 
 env:
   CMDSTAN_VERSION: "{{ cookiecutter.cmdstan_version }}"
-
+{% raw %}
 jobs:
   sk-stan-learn:
     name: tests
@@ -60,3 +60,4 @@ jobs:
       - name: Run tests
         run: |
           pytest --v ./tests
+{% endraw %}
