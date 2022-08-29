@@ -13,27 +13,35 @@ CMDSTAN_VERSION = "{{ cookiecutter.cmdstan_version }}"
 local_cmdstan = STAN_FILES_FOLDER / f"cmdstan-{CMDSTAN_VERSION}"
 if local_cmdstan.exists():
     cmdstanpy.set_cmdstan_path(str(local_cmdstan.resolve()))
+
+def load_stan_model(name: str) -> cmdstanpy.CmdStanModel:
+    """
+    Try to load precompiled Stan models. If that fails,
+    compile them.
+    """
+    try:
+        model = cmdstanpy.CmdStanModel(
+            exe_file=STAN_FILES_FOLDER / f"{name}.exe",
+            stan_file=STAN_FILES_FOLDER / f"{name}.stan",
+            compile=False,
+        )
+    except ValueError:
+        warnings.warn(f"Failed to load pre-built model '{name}.exe', compiling")
+        model = cmdstanpy.CmdStanModel(
+            stan_file=STAN_FILES_FOLDER / f"{name}.stan",
+            stanc_options={"O1": True},
+        )
+        shutil.copy(
+            model.exe_file,  # type: ignore
+            STAN_FILES_FOLDER / f"{name}.exe",
+        )
+
+    return model
+
 {% set models = cookiecutter.stan_files.split(',') %}
-# Try to load the pre-compiled models. If that fails, compile them
-try:
 {% for item in models %}
-    {{ item|trim|upper }} = cmdstanpy.CmdStanModel(
-        exe_file=STAN_FILES_FOLDER / "{{ item|trim }}.exe",
-        stan_file=STAN_FILES_FOLDER / "{{ item|trim }}.stan",
-        compile=False,
-    )
+{{ item|trim|upper }} = load_stan_model("{{ item|trim }}")
 {% endfor %}
-except ValueError:
-    warnings.warn("Failed to load pre-built models, compiling")
-{% for item in models %}
-    {{ item|trim|upper }} = cmdstanpy.CmdStanModel(
-        stan_file=STAN_FILES_FOLDER / "{{ item|trim }}.stan",
-        stanc_options={"O1": True},
-    )
-    shutil.copy(
-        {{ item|upper }}.exe_file,  # type: ignore
-        STAN_FILES_FOLDER / "{{ item|trim }}.exe",
-    )
-{% endfor %}
+
 # example: just print the info of the model
 print({{ models[0]|trim|upper }}.exe_info())
