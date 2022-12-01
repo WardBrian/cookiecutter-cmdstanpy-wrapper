@@ -12,6 +12,7 @@ from typing import Tuple
 import cmdstanpy
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
+from distutils.command.clean import clean
 from wheel.bdist_wheel import bdist_wheel
 
 MODEL_DIR = "{{ cookiecutter.project_slug }}/stan"
@@ -123,6 +124,26 @@ class BuildModels(build_ext):
         # don't call build_ext.run, since we're not really building c files
 
 
+def clean_models(target_dir: str) -> None:
+    # Remove compiled stan files
+    for model in MODELS:
+        for filename in [model, f"{model}.hpp", f"{model}.exe"]:
+            stan_file = Path(target_dir) / filename
+            if stan_file.exists():
+                stan_file.unlink()
+
+
+class CleanModels(clean):
+    """Custom clean command to remove pre-compile Stan models."""
+
+    def run(self) -> None:
+        if not self.dry_run:
+            target_dir = os.path.join(self.build_lib, MODEL_DIR)
+            clean_models(target_dir)
+            clean_models(MODEL_DIR)
+            super().run()
+
+
 # this is taken from the cibuildwheel example https://github.com/joerick/python-ctypes-package-sample
 # it marks the wheel as not specific to the Python API version.
 # This means the wheel will only be built once per platform, rather than per-Python-per-platform.
@@ -141,5 +162,9 @@ setup(
     # Extension marks this as platform-specific
     ext_modules=[Extension("{{ cookiecutter.project_slug }}.stan", [])],
     # override the build and bdist commands
-    cmdclass={"build_ext": BuildModels, "bdist_wheel": WheelABINone},
+    cmdclass={
+        "build_ext": BuildModels,
+        "bdist_wheel": WheelABINone,
+        "clean": CleanModels
+    },
 )
